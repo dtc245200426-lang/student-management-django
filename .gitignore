@@ -24,3 +24,5 @@ Thumbs.db
 # File tạm
 *.log
 *.tmp
+# Thông tin đăng nhập MySQL Exporter
+mysql-exporter.my.cnf

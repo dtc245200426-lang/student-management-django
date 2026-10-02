@@ -50,6 +50,19 @@ services:
     networks:
       - qlsv_network
 
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: qlsv_mysql_exporter
+    restart: unless-stopped
+    command:
+      - "--config.my-cnf=/cfg/.my.cnf"
+    volumes:
+      - ./mysql-exporter.my.cnf:/cfg/.my.cnf:ro
+    depends_on:
+      - mysql
+    networks:
+      - qlsv_network
+
   nginx:
     image: nginx:alpine
     container_name: qlsv_nginx
@@ -75,6 +88,7 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
       - django
+      - mysql-exporter
     networks:
       - qlsv_network
 
