@@ -1,0 +1,92 @@
+{% extends 'students/base.html' %}
+
+{% block title %}
+Quản lý lớp học
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between mb-3">
+
+    <h2>Danh sách lớp học</h2>
+
+    <a
+        href="{% url 'classroom_create' %}"
+        class="btn btn-primary"
+    >
+        + Thêm lớp
+    </a>
+
+</div>
+
+<div class="table-responsive">
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Tên lớp</th>
+                <th>Khóa học</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for classroom in classrooms %}
+
+            <tr>
+
+                <td>{{ forloop.counter }}</td>
+
+                <td>{{ classroom.name }}</td>
+
+                <td>{{ classroom.course }}</td>
+
+                <td>
+
+                    <a
+                        href="{% url 'classroom_update' classroom.id %}"
+                        class="btn btn-sm btn-warning"
+                    >
+                        Sửa
+                    </a>
+
+                    <a
+                        href="{% url 'classroom_delete' classroom.id %}"
+                        class="btn btn-sm btn-danger"
+                    >
+                        Xóa
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+                <td colspan="4" class="text-center">
+                    Chưa có lớp học.
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="mt-3">
+    <a
+        href="{% url 'home' %}"
+        class="btn btn-secondary"
+    >
+        ← Quay lại
+    </a>
+</div>
+
+{% endblock %}

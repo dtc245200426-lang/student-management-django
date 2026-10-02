@@ -1,0 +1,7 @@
+asgiref==3.12.1
+Django==6.0.8
+django-prometheus==2.5.0
+mysqlclient==2.3.0
+prometheus_client==0.26.0
+sqlparse==0.6.0
+tzdata==2026.4

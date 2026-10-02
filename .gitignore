@@ -1,0 +1,26 @@
+# Môi trường Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Biến môi trường và thông tin bí mật
+.env
+.env.*
+
+# Khóa HTTPS riêng tư
+nginx/certs/*.key
+
+# Cơ sở dữ liệu SQLite cũ
+db.sqlite3
+
+# VS Code
+.vscode/
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# File tạm
+*.log
+*.tmp
