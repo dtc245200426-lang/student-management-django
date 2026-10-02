@@ -16,7 +16,14 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# Tạo tài khoản riêng để chạy ứng dụng, không sử dụng root
+RUN groupadd --system django \
+    && useradd --system --gid django --create-home django
+
+COPY --chown=django:django . .
+
+# Chuyển sang tài khoản không có quyền root
+USER django
 
 EXPOSE 8000
 
