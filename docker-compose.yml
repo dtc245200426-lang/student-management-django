@@ -1,0 +1,127 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: qlsv_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - qlsv_mysql_data:/var/lib/mysql
+    networks:
+      - qlsv_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: qlsv_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - qlsv_network
+
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: qlsv_django
+    restart: unless-stopped
+    environment:
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_DEBUG: "False"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    networks:
+      - qlsv_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: qlsv_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - django
+    networks:
+      - qlsv_network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: qlsv_prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - django
+    networks:
+      - qlsv_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: qlsv_grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - qlsv_grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - qlsv_network
+
+  loki:
+    image: grafana/loki:latest
+    container_name: qlsv_loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yaml:ro
+      - qlsv_loki_data:/loki
+    networks:
+      - qlsv_network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: qlsv_promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - loki
+    networks:
+      - qlsv_network
+
+volumes:
+  qlsv_mysql_data:
+  qlsv_grafana_data:
+  qlsv_loki_data:
+
+networks:
+  qlsv_network:
+    driver: bridge
