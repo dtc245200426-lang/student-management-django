@@ -318,3 +318,42 @@ docker compose exec django python manage.py check --deploy
 
 ```
 
+
+## 11. Cấu trúc thư mục dự án
+
+```text
+student-management-django/
+├── config/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── nginx/
+│   ├── certs/
+│   │   └── localhost.crt
+│   └── default.conf
+├── prometheus/
+│   └── prometheus.yml
+├── students/
+│   ├── migrations/
+│   ├── static/students/
+│   ├── templates/students/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── forms.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── loki-config.yml
+├── manage.py
+├── promtail-config.yml
+├── README.md
+└── requirements.txt
+```
