@@ -321,6 +321,9 @@ docker compose exec django python manage.py check --deploy
 
 ## 11. Cấu trúc thư mục dự án
 
+Cây bên dưới liệt kê các tệp được theo dõi trong kho Git; cấu hình riêng và dữ liệu phát sinh không được đưa vào danh sách.
+
+
 ```text
 student-management-django/
 ├── config/
